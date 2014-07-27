@@ -64,16 +64,28 @@ class GameState
 
     #prints the current state of the board
     public
-    def print_board(p1_nums, p2_nums) 
-
+    def print_board() 
+        count = 0
+        9.times do |n|
+            if  $board[n+1] == "none"
+                print "|_|"
+            elsif $board[n+1] == "X"
+                print "|X|"
+            else
+                print "|O|"
+            end
+            count = count + 1
+            if count == 3
+                puts ""
+                count = 0
+            end
+        end
     end
 end
 
 class Player
     attr_reader :name
     attr_reader :symbol
-    attr_accessor :nums
-    @@nums = Array.new()
     
     def initialize(name, symbol)
       @name = name
@@ -110,18 +122,16 @@ def begin_game
         if p1_turn
             puts "#{p1.name} Pick a number from 1-9 on the board"
             num_on_board = gets.chomp.to_i
-            p1.nums.push(num_on_board)
             p1.place_in_board(num_on_board, p1.symbol)
             p1_turn = false 
         else
             puts "#{p2.name} Pick a number from 1-9 on the board"
             num_on_board = gets.chomp.to_i
-            p2.nums.push(num_on_board)
             p2.place_in_board(num_on_board, p2.symbol)
             p1_turn = true
         end
 
-        start_game.print_board(p1.nums, p2.nums)
+        start_game.print_board
 
         $turns = $turns + 1
         if start_game.game_over? == true then
