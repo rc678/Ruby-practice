@@ -16,12 +16,13 @@ puts ""
 
 #initizes the Tic-Tac-Toe board
 $board = {}
+$turns = 0
 9.times {|n| $board[n+1] = "none"}
+
 
 #keeps track of the progress of the game
 class GameState
     attr_accessor :state
-    @@turns = 0    
      
     def initialize(state)
       @state = state
@@ -29,7 +30,7 @@ class GameState
 
     #checks the number of turns to see if there are no more turns avaialable
     def game_over?
-            if @@turns >= 9 then
+            if $turns >= 9 then
                 puts "No more turns available"
                 return true
             end
@@ -37,9 +38,10 @@ class GameState
     end
     
     #finds out which player wins after no more turns are possible 
-    private 
+    public 
     def find_winner
-             
+        puts "in find winner"
+         horizontal_check    
     end
 
     #checks if any player won horizontally on the board
@@ -61,16 +63,17 @@ class GameState
     end
 
     #prints the current state of the board
-    private
-    def print_board
+    public
+    def print_board(p1_nums, p2_nums) 
 
     end
 end
 
 class Player
     attr_reader :name
-    attr_reader :symbol 
-    @@nums = []
+    attr_reader :symbol
+    attr_accessor :nums
+    @@nums = Array.new()
     
     def initialize(name, symbol)
       @name = name
@@ -90,6 +93,7 @@ class Player
     end   
 end 
 
+#function calls necessary functions and creates objects to start the game
 def begin_game
     start_game = GameState.new(true)
     p1_turn = true
@@ -106,16 +110,29 @@ def begin_game
         if p1_turn
             puts "#{p1.name} Pick a number from 1-9 on the board"
             num_on_board = gets.chomp.to_i
+            p1.nums.push(num_on_board)
             p1.place_in_board(num_on_board, p1.symbol)
             p1_turn = false 
         else
             puts "#{p2.name} Pick a number from 1-9 on the board"
             num_on_board = gets.chomp.to_i
+            p2.nums.push(num_on_board)
             p2.place_in_board(num_on_board, p2.symbol)
             p1_turn = true
         end
+
+        start_game.print_board(p1.nums, p2.nums)
+
+        $turns = $turns + 1
+        if start_game.game_over? == true then
+            start_game.find_winner
+        else
+
+        end
+        start_game.find_winner
     end
 end
 
+#calls the function that starts the game. 
 begin_game
 
