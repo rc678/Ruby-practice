@@ -40,26 +40,68 @@ class GameState
     #finds out which player wins after no more turns are possible 
     public 
     def find_winner
-        puts "in find winner"
-         horizontal_check    
+        x_nums = $board.select {|key| $board[key] == "X" }
+        o_nums = $board.select { |key| $board[key] == "O" }       
+        winner =  horizontal_check(x_nums, o_nums)
+        if winner == "p1" || winner == "p2" then
+            return winner
+        end
+        winner = vertical_check(x_nums, o_nums)
+        if winner == "p1" || winner == "p2" then
+            return winner
+        end
+        winner = diagonal_check(x_nums, o_nums)
+        if winner == "p1" || winner == "p2" then
+            return winner
+        end
+        return "Nobody"
     end
 
     #checks if any player won horizontally on the board
     private
-    def horizontal_check
-        puts "checking horizontal"
+    def horizontal_check(x, o)
+        case1 = [1,2,3].all? {|num| x.key?(num) } 
+        case2 = [4,5,6].all? {|num| x.key?(num) } 
+        case3 = [7,8,9].all? {|num| x.key?(num) }
+        case4 = [1,2,3].all? {|num| o.key?(num) }
+        case5 = [4,5,6].all? {|num| o.key?(num) }
+        case6 = [7,8,9].all? {|num| o.key?(num) }
+        
+        if case1 || case2 || case3
+            return "p1"
+        elsif case4 || case5 || case6
+            return "p2"
+        else
+            return "not p1 or p2"
+        end 
     end
 
     #checks if any player won vertically on the board
     private
-    def vertical_check
+    def vertical_check(x, o)
+        case1 = [1,4,7].all? {|num| x.key?(num)}
+        case2 = [2,5,8].all? {|num| x.key?(num)}
+        case3 = [3,6,9].all? {|num| x.key?(num)}
+        case4 = [1,4,7].all? {|num| o.key?(num)}
+        case5 = [2,5,8].all? {|num| o.key?(num)}
+        case6 = [3,6,9].all? {|num| o.key?(num)}
 
+        if case1 || case2 || case3
+            return "p1"
+        elsif case4 || case5 || case6
+            return "p2"
+        else
+            return "not p1 or p2"
+        end
     end
 
     #checks to see if a player won diagonally
     private
-    def diagonal_check
-
+    def diagonal_check(x, o)
+        case1 = [1,5,9].all? {|num| x.key?(num)}
+        case2 = [3,5,7].all? {|num| x.key?(num)}
+        case3 = [1,5,9].all? {|num| o.key?(num)}
+        case4 = [3,5,7].all? {|num| o.key?(num)}
     end
 
     #prints the current state of the board
@@ -118,6 +160,11 @@ def begin_game
     while start_game.state
 	    if start_game.game_over? == true then
             break
+        else
+            player_who_won = start_game.find_winner
+            if player_who_won == "p1" || player_who_won == "p2"
+                break
+            end
         end
 
         if p1_turn
@@ -153,7 +200,8 @@ def begin_game
         start_game.print_board
     end #end of outer while
 
-    start_game.find_winner
+    player_who_won = start_game.find_winner
+    puts "#{player_who_won} is the winner."
 end
 
 #calls the function that starts the game. 
