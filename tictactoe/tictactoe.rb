@@ -16,7 +16,6 @@ puts ""
 
 #initizes the Tic-Tac-Toe board
 $board = {}
-$turns = 0
 9.times {|n| $board[n+1] = "none"}
 
 
@@ -30,11 +29,12 @@ class GameState
 
     #checks the number of turns to see if there are no more turns avaialable
     def game_over?
-            if $turns >= 9 then
+            if $board.has_value?("none") == false then
                 puts "No more turns available"
                 return true
+            else
+                return false
             end
-        return false
     end
     
     #finds out which player wins after no more turns are possible 
@@ -47,7 +47,7 @@ class GameState
     #checks if any player won horizontally on the board
     private
     def horizontal_check
-
+        puts "checking horizontal"
     end
 
     #checks if any player won vertically on the board
@@ -98,9 +98,6 @@ class Player
         if $board[position] == "none" then
             $board[position] = psymbol
             puts "Entered #{position} in board"
-        else
-            #COME BACK TO THIS. ERROR CHECKING NEEDED.
-            puts "#{position} already in use. Pick a different number."
         end
     end   
 end 
@@ -119,28 +116,44 @@ def begin_game
 
     #asks player the moves they should make
     while start_game.state
+	    if start_game.game_over? == true then
+            break
+        end
+
         if p1_turn
-            puts "#{p1.name} Pick a number from 1-9 on the board"
-            num_on_board = gets.chomp.to_i
+            puts "#{p1.name}, pick a number from 1-9 on the board"
+            while true
+                num_on_board = gets.chomp.to_i
+                if $board[num_on_board] != "none"
+                    puts "This place is filled. Please pick another position." 
+		        elsif (num_on_board >= 1 && num_on_board <= 9) then
+                    break
+                else
+                    puts "You need to pick a number from 1-9. Pick again"
+                end
+            end
             p1.place_in_board(num_on_board, p1.symbol)
             p1_turn = false 
         else
-            puts "#{p2.name} Pick a number from 1-9 on the board"
-            num_on_board = gets.chomp.to_i
+            puts "#{p2.name}, pick a number from 1-9 on the board"
+            while true
+                num_on_board = gets.chomp.to_i
+                if $board[num_on_board] != "none"
+                    puts "This place is filled. Please pick another position."
+		        elsif (num_on_board >= 1 && num_on_board <= 9) then
+                    break
+                else
+                    puts "You need to pick a number from 1-9 on the board"
+                end
+            end
             p2.place_in_board(num_on_board, p2.symbol)
             p1_turn = true
         end
 
         start_game.print_board
+    end #end of outer while
 
-        $turns = $turns + 1
-        if start_game.game_over? == true then
-            start_game.find_winner
-        else
-
-        end
-        start_game.find_winner
-    end
+    start_game.find_winner
 end
 
 #calls the function that starts the game. 
