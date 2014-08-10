@@ -1,0 +1,2 @@
+- when entering a decimal number, mention that it will be rounded down or ask to enter again
+- put number on board each time it is printed
